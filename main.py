@@ -69,7 +69,10 @@ def getpost(id: str):
     else:
         save_data(title, text, images, cover_image)
         print(f'{title} OK')
-    return body['nextPost']['id']
+    try:
+        return body['nextPost']['id']
+    except:
+        return None
 
 
 def main():
