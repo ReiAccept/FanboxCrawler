@@ -64,16 +64,23 @@ def getpost(id: str):
         cover_image = body['coverImageUrl']
     except:
         cover_image = None
-    save_data(title, text, images, cover_image)
-    print(f'{title} OK')
+    if text == None and images == None:
+        print(f'SKIP {id} {title}')
+    else:
+        save_data(title, text, images, cover_image)
+        print(f'{title} OK')
     return body['nextPost']['id']
 
 
 def main():
     id = '在这里填入你要爬取的作者的第一篇文章的ID'
     while id != None:
-        id = getpost(id)
         time.sleep(1)
+        try:
+            id = getpost(id)
+        except :
+            print(f'Retry {id}')
+            continue
 
 
 main()
