@@ -65,6 +65,7 @@ def getpost(id: str):
     except:
         cover_image = None
     save_data(title, text, images, cover_image)
+    print(f'{title} OK')
     return body['nextPost']['id']
 
 
