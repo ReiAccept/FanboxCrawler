@@ -42,7 +42,6 @@ def save_data(title: str, text: str, images, cover_image: str):
         if os.path.exists(img_path) == False:
             os.makedirs(img_path)
         for image in images:
-            print(image)
             filename = f'{image["id"]}.{image["extension"]}'
             url = image['originalUrl']
             pic = httpx.get(url=url, headers=headers)
