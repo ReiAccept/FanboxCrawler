@@ -81,7 +81,7 @@ def getpost(id: str):
             images.append(imageMap[image])
     except:
         pass
-    if text == '' and images == {}:
+    if text == '' and images == []:
         print(f'SKIP {id} {title}')
     else:
         save_data(title, text, images, cover_image)
