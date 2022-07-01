@@ -25,19 +25,24 @@ headers = {
 def save_data(title: str, text: str, images, cover_image: str):
     if os.path.exists(title) == False:
         os.makedirs(title)
-    file = open(f'{title}/{title}.md', 'w', encoding='utf-8')
-    file.write(f'## {title} \n {text}')
-    file.close()
+
+    if(text != ''):
+        file = open(f'{title}/{title}.md', 'w', encoding='utf-8')
+        file.write(f'## {title} \n {text}')
+        file.close()
+
     if cover_image != None:
         file = open(f'{title}/cover_image.jpg', 'wb')
         pic = httpx.get(url=cover_image, headers=headers)
         file.write(pic.content)
         file.close()
-    if images != None:
+
+    if images != []:
         img_path = f'{title}/images'
         if os.path.exists(img_path) == False:
             os.makedirs(img_path)
         for image in images:
+            print(image)
             filename = f'{image["id"]}.{image["extension"]}'
             url = image['originalUrl']
             pic = httpx.get(url=url, headers=headers)
@@ -55,16 +60,29 @@ def getpost(id: str):
     try:
         text = body['body']['text']
     except:
-        text = None
+        text = ''
     try:
         images = body['body']['images']
     except:
-        images = None
+        images = []
     try:
         cover_image = body['coverImageUrl']
     except:
         cover_image = None
-    if text == None and images == None:
+    try:
+        blocks = body['body']['blocks']
+        for block in blocks:
+            if block['type'] == 'p':
+                text = text+str(block['text'])+'\n'
+    except:
+        pass
+    try:
+        imageMap = body['body']['imageMap']
+        for image in imageMap:
+            images.append(imageMap[image])
+    except:
+        pass
+    if text == '' and images == {}:
         print(f'SKIP {id} {title}')
     else:
         save_data(title, text, images, cover_image)
@@ -81,7 +99,7 @@ def main():
         time.sleep(1)
         try:
             id = getpost(id)
-        except :
+        except:
             print(f'Retry {id}')
             continue
 
